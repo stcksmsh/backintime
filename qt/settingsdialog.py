@@ -482,6 +482,11 @@ class SettingsDialog(QDialog):
 
         self.comboSchedule.currentIndexChanged.connect(self.scheduleChanged)
 
+        self.cbDebugSchedule = QCheckBox(self)
+        self.cbDebugSchedule.setText(_('Enable logging of debug messages'))
+        self.cbDebugSchedule.setToolTip(('Write debug-level messages into the system log. Warning: Use only to diagnose problems since it creates a lot of output.'))
+        glayout.addWidget(self.cbDebugSchedule, 8, 0)
+
         #
         layout.addStretch()
         scrollArea.setWidget(layoutWidget)
@@ -1348,6 +1353,8 @@ class SettingsDialog(QDialog):
                            self.config.scheduleRepeatedUnit())
         self.updateSchedule(self.config.scheduleMode())
 
+        self.cbDebugSchedule.setChecked(self.config.debugSchedule())
+
         # TAB: Include
         self.listInclude.clear()
 
@@ -1583,6 +1590,8 @@ class SettingsDialog(QDialog):
         self.config.setScheduleRepeatedUnit(
             self.comboScheduleRepeatedUnit.itemData(
                 self.comboScheduleRepeatedUnit.currentIndex()))
+
+        self.config.setDebugSchedule(self.cbDebugSchedule.isChecked())
 
         # auto-remove
         self.config.setRemoveOldSnapshots(

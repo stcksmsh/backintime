@@ -958,6 +958,13 @@ class Config(configfile.ConfigFileWithProfiles):
     def setScheduleMode(self, value, profile_id = None):
         self.setProfileIntValue('schedule.mode', value, profile_id)
 
+    def debugSchedule(self, profile_id = None):
+        #?Enable debug output to system log for schedule mode.
+        return self.profileBoolValue('schedule.debug', False, profile_id)
+
+    def setDebugSchedule(self, value, profile_id = None):
+        self.setProfileBoolValue('schedule.debug', value, profile_id)
+
     def scheduleTime(self, profile_id = None):
         #?Position-coded number with the format "hhmm" to specify the hour
         #?and minute the cronjob should start (eg. 2015 means a quarter
@@ -1756,7 +1763,7 @@ class Config(configfile.ConfigFileWithProfiles):
             cmd += '--profile-id %s ' % profile_id
         if not self._LOCAL_CONFIG_PATH is self._DEFAULT_CONFIG_PATH:
             cmd += '--config %s ' % self._LOCAL_CONFIG_PATH
-        if logger.DEBUG:
+        if logger.DEBUG or self.debugSchedule(profile_id):
             cmd += '--debug '
         cmd += 'backup-job'
         if self.redirectStdoutInCron(profile_id):
