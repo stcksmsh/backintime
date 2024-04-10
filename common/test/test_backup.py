@@ -259,7 +259,8 @@ class TestBackup(generic.SnapshotsTestCase):
     def test_crontab_contains_debug(self, sleep):
         # create config object with default values
         conf = config.Config('config')
-        
+        logger.DEBUG = False
+
         # assert start conditions: NO DEBUGGING
         self.assertFalse(conf.debugSchedule())
         self.assertFalse(logger.DEBUG)
@@ -283,6 +284,7 @@ class TestBackup(generic.SnapshotsTestCase):
         conf = config.Config('config')
         
         conf.setDebugSchedule(False)
+        logger.DEBUG = False
 
         self.assertFalse(conf.debugSchedule())
         self.assertFalse(logger.DEBUG)
