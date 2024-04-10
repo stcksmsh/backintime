@@ -255,3 +255,37 @@ class TestBackup(generic.SnapshotsTestCase):
             self.sn.backup()
         self.assertFalse(new.saveToContinue)
         self.assertTrue(new.failed)
+
+    def test_crontab_contains_debug(self, sleep):
+        # create config object with default values
+        conf = config.Config('config')
+        
+        # assert start conditions: NO DEBUGGING
+        self.assertFalse(conf.debugSchedule())
+        self.assertFalse(logger.DEBUG)
+
+        # the "system under test" (sut)
+        sut = conf.cronCmd(profile_id='1')
+        # assert that the command string does not contain the debug flag
+        self.assertNotIn('--debug', sut)
+
+        # now enable debugging
+        conf.setDebugSchedule(True)
+
+        # assert that debugging is enabled
+        self.assertTrue(conf.debugSchedule())
+        # again the "system under test" (sut)
+        sut = conf.cronCmd(profile_id='1')
+        # assert that the command string contains the debug flag
+        self.assertIn('--debug', sut)
+
+    def test_crontab_without_debug(self, sleep):
+        conf = config.Config('config')
+        
+        conf.setDebugSchedule(False)
+
+        self.assertFalse(conf.debugSchedule())
+        self.assertFalse(logger.DEBUG)
+
+        sut = conf.cronCmd(profile_id='1')
+        self.assertNotIn('--debug', sut)
