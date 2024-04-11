@@ -1771,11 +1771,11 @@ class Config(configfile.ConfigFileWithProfiles):
         cmd = tools.which('backintime') + ' '
 
         # The "--profile-id" argument is used only for profiles different from
-        # frist profile
+        # first profile
         if profile_id != '1':
             cmd += '--profile-id %s ' % profile_id
 
-        # User definied path to config file
+        # User defined path to config file
         if not self._LOCAL_CONFIG_PATH is self._DEFAULT_CONFIG_PATH:
             cmd += '--config %s ' % self._LOCAL_CONFIG_PATH
 

@@ -255,12 +255,3 @@ class TestBackup(generic.SnapshotsTestCase):
             self.sn.backup()
         self.assertFalse(new.saveToContinue)
         self.assertTrue(new.failed)
-
-    def test_foobar(self, sleep):
-        c = config.Config('config')
-        import tools
-        w = tools.which('backintime')
-        print(f'test_foobar() :: {w=}')
-        return
-        cmd = c.cronCmd(1)
-        print(f'xxxxx {cmd=}')

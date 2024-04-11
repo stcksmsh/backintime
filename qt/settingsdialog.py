@@ -484,7 +484,10 @@ class SettingsDialog(QDialog):
 
         self.cbDebugSchedule = QCheckBox(self)
         self.cbDebugSchedule.setText(_('Enable logging of debug messages'))
-        self.cbDebugSchedule.setToolTip(('Write debug-level messages into the system log. Warning: Use only to diagnose problems since it creates a lot of output.'))
+        self.cbDebugSchedule.setToolTip(_(
+            'Writes debug-level messages into the system log. Caution: Only '
+            'use this for diagnosis, as it generates a large amount of output.'
+        ))
         glayout.addWidget(self.cbDebugSchedule, 8, 0)
 
         #
@@ -2138,7 +2141,7 @@ class SettingsDialog(QDialog):
             item.setIcon(0, self.icon.DEFAULT_EXCLUDE)
             return
 
-        # Icon: user definied
+        # Icon: user defined
         item.setIcon(0, self.icon.EXCLUDE)
 
 

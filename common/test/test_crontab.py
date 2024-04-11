@@ -22,7 +22,6 @@ import tempfile
 import inspect
 from pathlib import Path
 from unittest import mock
-
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import backintime
 import config
@@ -66,12 +65,6 @@ class CrontabDebug(pyfakefs_ut.TestCase):
             profile1.snapshots.rsync_options.value=
             profiles.version=1
         ''')
-
-        # cfg_content = cfg_content.format(
-        #     rootpath=parent_path,
-        #     source=cls.NAME_SOURCE,
-        #     destination=cls.NAME_DESTINATION
-        # )
 
         # config file location
         config_fp = parent_path / 'config_path' / 'config'
