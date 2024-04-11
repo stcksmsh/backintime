@@ -1780,7 +1780,7 @@ class Config(configfile.ConfigFileWithProfiles):
             cmd += '--config %s ' % self._LOCAL_CONFIG_PATH
 
         # Enable debug output
-        if logger.DEBUG or self.debugSchedule(profile_id):
+        if self.debugSchedule(profile_id):
             cmd += '--debug '
 
         # command
