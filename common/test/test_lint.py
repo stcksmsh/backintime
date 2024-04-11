@@ -3,7 +3,6 @@ import os
 import pathlib
 import subprocess
 import shutil
-import inspect
 from typing import Iterable
 
 ON_TRAVIS = os.environ.get('TRAVIS', '') == 'true'
@@ -81,6 +80,7 @@ class MirrorMirrorOnTheWall(unittest.TestCase):
             'E0401',  # import-error
             'E0602',  # undefined-variable
             'E1101',  # no-member
+            # 'W0611',  # unused-import
             'W1301',  # unused-format-string-key
             'W1401',  # anomalous-backslash-in-string (invalid escape sequence)
             'I0021',  # useless-suppression
@@ -106,7 +106,6 @@ class MirrorMirrorOnTheWall(unittest.TestCase):
             # 'W4904',  # deprecated-class
             # 'W0603',  # global-statement
             # 'W0614',  # unused-wildcard-import
-            # 'W0611',  # unused-import
             # 'W0612',  # unused-variable
             # 'W0707',  # raise-missing-from
         ]
