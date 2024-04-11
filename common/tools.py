@@ -353,11 +353,15 @@ def registerBackintimePath(*path):
         sys.path.insert(0, path)
 
 def runningFromSource():
-    """
-    Check if BackInTime is running from source (without installing).
+    """Check if BackInTime is running from source (without installing).
+
+    Dev notes by buhtz (2024-04): This function is dangerous and will give a
+    false-negative in fake filesystems (e.g. PyFakeFS). The function should
+    not exist. Beside unit tests it is used only two times. Remove it until
+    migration to pyproject.toml based project packaging (#1575).
 
     Returns:
-        bool:   ``True`` if BackInTime is running from source
+        bool: ``True`` if BackInTime is running from source.
     """
     return os.path.isfile(backintimePath('common', 'backintime'))
 
@@ -484,15 +488,15 @@ def readFileLines(path, default = None):
 
     return ret_val
 
+
 def checkCommand(cmd):
-    """
-    Check if command ``cmd`` is a file in 'PATH' environ.
+    """Check if command ``cmd`` is a file in 'PATH' environment.
 
     Args:
-        cmd (str):  command
+        cmd (str): The command.
 
     Returns:
-        bool:       ``True`` if command ``cmd`` is in 'PATH' environ
+        bool: ``True`` if ``cmd`` is in 'PATH' environment otherwise ``False``.
     """
     cmd = cmd.strip()
 
@@ -501,29 +505,39 @@ def checkCommand(cmd):
 
     if os.path.isfile(cmd):
         return True
-    return not which(cmd) is None
+
+    return which(cmd) is not None
+
 
 def which(cmd):
-    """
-    Get the fullpath of executable command ``cmd``. Works like
-    command-line 'which' command.
+    """Get the fullpath of executable command ``cmd``.
+
+    Works like command-line 'which' command.
+
+    Dev note by buhtz (2024-04): Give false-negative results in fake
+    filesystems. Quit often use in the whole code base. But not sure why
+    can we replace it with "which" from shell?
 
     Args:
-        cmd (str):  command
+        cmd (str): The command.
 
     Returns:
-        str:        fullpath of command ``cmd`` or ``None`` if command is
-                    not available
+        str: Fullpath of command ``cmd`` or ``None`` if command is not
+             available.
     """
     pathenv = os.getenv('PATH', '')
-    path = pathenv.split(":")
+    path = pathenv.split(':')
     common = backintimePath('common')
+
     if runningFromSource() and common not in path:
         path.insert(0, common)
+
     for directory in path:
         fullpath = os.path.join(directory, cmd)
+
         if os.path.isfile(fullpath) and os.access(fullpath, os.X_OK):
             return fullpath
+
     return None
 
 def makeDirs(path):
