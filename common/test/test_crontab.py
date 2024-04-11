@@ -44,7 +44,7 @@ class CrontabDebug(pyfakefs_ut.TestCase):
 
         self.config_fp = self._create_config_file(parent_path=self.temp_path)
 
-        # logger.DEBUG = False
+        logger.DEBUG = True
 
     def _create_config_file(cls, parent_path):
         """Minimal config file"""
