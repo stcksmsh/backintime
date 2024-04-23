@@ -1307,11 +1307,15 @@ def mountpoint(path):
         str:        mountpoint of the filesystem
     """
     path = os.path.realpath(os.path.abspath(path))
+
     while path != os.path.sep:
         if os.path.ismount(path):
             return path
+
         path = os.path.abspath(os.path.join(path, os.pardir))
+
     return path
+
 
 def decodeOctalEscape(s):
     """
@@ -1358,6 +1362,7 @@ def mountArgs(path):
 
     return None
 
+
 def device(path):
     """
     Get the device for the filesystem of ``path``.
@@ -1379,6 +1384,7 @@ def device(path):
         return args[0]
 
     return None
+
 
 def filesystem(path):
     """
@@ -1522,6 +1528,7 @@ def uuidFromDev(dev):
     # Try "udevadm" command at the end
     return _uuidFromDev_via_udevadm_command(dev)
 
+
 def uuidFromPath(path):
     """
     Get the UUID for the for the filesystem of ``path``.
@@ -1533,6 +1540,7 @@ def uuidFromPath(path):
         str:        UUID
     """
     return uuidFromDev(device(path))
+
 
 def filesystemMountInfo():
     """
@@ -2241,17 +2249,21 @@ class ShutDown(object):
         """
         if not self.activate_shutdown:
             return(False)
+
         if self.is_root:
             syncfs()
             self.started = True
             proc = subprocess.Popen(['shutdown', '-h', 'now'])
             proc.communicate()
             return proc.returncode
+
         if self.proxy is None:
             return(False)
+
         else:
             syncfs()
             self.started = True
+
             return(self.proxy(*self.args))
 
     def unity7(self):
@@ -2268,6 +2280,7 @@ class ShutDown(object):
         m = re.match(r'unity ([\d\.]+)', unity_version)
 
         return m and Version(m.group(1)) >= Version('7.0') and processExists('unity-panel-service')
+
 
 class SetupUdev(object):
     """
