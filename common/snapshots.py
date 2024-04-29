@@ -1,21 +1,20 @@
-#	Back In Time
-#	Copyright (C) 2008-2022 Oprea Dan, Bart de Koning, Richard Bailey, Germar Reitze, Taylor Raack
+# Back In Time
+# Copyright (C) 2008-2022 Oprea Dan, Bart de Koning, Richard Bailey,
+# Germar Reitze, Taylor Raack
 #
-#	This program is free software; you can redistribute it and/or modify
-#	it under the terms of the GNU General Public License as published by
-#	the Free Software Foundation; either version 2 of the License, or
-#	(at your option) any later version.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-#	This program is distributed in the hope that it will be useful,
-#	but WITHOUT ANY WARRANTY; without even the implied warranty of
-#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#	GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#	You should have received a copy of the GNU General Public License along
-#	with this program; if not, write to the Free Software Foundation, Inc.,
-#	51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 import json
 import os
 from pathlib import Path
@@ -24,6 +23,7 @@ import datetime
 import gettext
 import bz2
 import pwd
+import getpass
 import grp
 import subprocess
 import shutil
@@ -31,7 +31,6 @@ import time
 import re
 import fcntl
 from tempfile import TemporaryDirectory
-
 import config
 import configfile
 import logger
@@ -251,7 +250,7 @@ class Snapshots:
                         callback(msg)
                 else:
                     self.restorePermissionFailed = True
-                    msg = 'Failed to get UID for %s: %s' %(name, str(e))
+                    msg = 'Failed to get UID for %s: %s' % (name, str(e))
                     logger.error(msg, self)
                     if callback:
                         callback(msg)
@@ -733,8 +732,9 @@ class Snapshots:
             self.config.PLUGIN_MANAGER.error(1)
 
         elif (not force
-                  and self.config.noSnapshotOnBattery()
-                  and tools.onBattery()):
+              and self.config.noSnapshotOnBattery()
+              and tools.onBattery()):
+
             self.setTakeSnapshotMessage(
                 0, _('Deferring backup while on battery'))
             logger.info('Deferring backup while on battery', self)
@@ -762,7 +762,7 @@ class Snapshots:
                 logger.warning(
                     'A backup is already running. The pid of the already '
                     f'running backup is in file {instance.pidFile}. Maybe '
-                    'delete it.', self )
+                    'delete it.', self)
 
                 # a backup is already running
                 self.config.PLUGIN_MANAGER.error(2)
@@ -774,7 +774,7 @@ class Snapshots:
                     f'{restore_instance.pidFile}. Maybe delete it.', self)
 
             else:
-                if (self.config.noSnapshotOnBattery ()
+                if (self.config.noSnapshotOnBattery()
                         and not tools.powerStatusAvailable()):
                     logger.warning('Backups disabled on battery but power '
                                    'status is not available', self)
@@ -794,7 +794,7 @@ class Snapshots:
 
                 # mount
                 try:
-                    hash_id = mount.Mount(cfg = self.config).mount()
+                    hash_id = mount.Mount(cfg=self.config).mount()
 
                 except MountException as ex:
                     logger.error(str(ex), self)
@@ -1126,7 +1126,7 @@ class Snapshots:
         """
         logger.info("Create info file", self)
         machine = self.config.host()
-        user = self.config.user()
+        user = getpass.getuser()
         profile_id = self.config.currentProfile()
         i = configfile.ConfigFile()
         i.setIntValue('snapshot_version', self.SNAPSHOT_VERSION)
@@ -3031,8 +3031,7 @@ class RootSnapshot(GenericNonSnapshot):
 
 def iterSnapshots(cfg, includeNewSnapshot = False):
     """
-    Iterate over snapshots in current snapshot path. Use this in a 'for' loop
-    for faster processing than list object
+    A generator to iterate over snapshots in current snapshot path.
 
     Args:
         cfg (config.Config):        current config
@@ -3043,21 +3042,33 @@ def iterSnapshots(cfg, includeNewSnapshot = False):
         SID:                        snapshot IDs
     """
     path = cfg.snapshotsFullPath()
+
     if not os.path.exists(path):
         return None
+
     for item in os.listdir(path):
+
         if item == NewSnapshot.NEWSNAPSHOT:
             newSid = NewSnapshot(cfg)
+
             if newSid.exists() and includeNewSnapshot:
                 yield newSid
+
             continue
+
         try:
             sid = SID(item, cfg)
+
             if sid.exists():
                 yield sid
+
+        # REFACTOR!
+        # LastSnapshotSymlink is an exception instance and could be catched
+        # explicit. But not sure about its purpose.
         except Exception as e:
             if not isinstance(e, LastSnapshotSymlink):
-                logger.debug("'{}' is not a snapshot ID: {}".format(item, str(e)))
+                logger.debug(
+                    "'{}' is not a snapshot ID: {}".format(item, str(e)))
 
 
 def listSnapshots(cfg, includeNewSnapshot = False, reverse = True):
