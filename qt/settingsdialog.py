@@ -22,7 +22,6 @@ import datetime
 import copy
 import re
 import getpass
-import textwrap
 from PyQt6.QtGui import (QIcon,
                          QFont,
                          QPalette,
