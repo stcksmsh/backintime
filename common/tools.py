@@ -89,6 +89,7 @@ DISK_BY_UUID = '/dev/disk/by-uuid'
 # | Handling paths  |
 # |-----------------|
 
+
 def sharePath():
     """Get path where Back In Time is installed.
 
@@ -110,6 +111,7 @@ def sharePath():
         return share
 
     return '/usr/share'
+
 
 def backintimePath(*path):
     """
@@ -349,8 +351,10 @@ def registerBackintimePath(*path):
         would need this to actually import :py:mod:`tools`.
     """
     path = backintimePath(*path)
-    if not path in sys.path:
+
+    if path not in sys.path:
         sys.path.insert(0, path)
+
 
 def runningFromSource():
     """Check if BackInTime is running from source (without installing).
@@ -365,6 +369,7 @@ def runningFromSource():
     """
     return os.path.isfile(backintimePath('common', 'backintime'))
 
+
 def addSourceToPathEnviron():
     """
     Add 'backintime/common' path to 'PATH' environ variable.
@@ -372,7 +377,8 @@ def addSourceToPathEnviron():
     source = backintimePath('common')
     path = os.getenv('PATH')
     if path and source not in path.split(':'):
-        os.environ['PATH'] = '%s:%s' %(source, path)
+        os.environ['PATH'] = '%s:%s' % (source, path)
+
 
 def get_git_repository_info(path=None, hash_length=None):
     """Return the current branch and last commit hash.
@@ -460,6 +466,7 @@ def readFile(path, default=None):
 
     return ret_val
 
+
 def readFileLines(path, default = None):
     """
     Read the file in ``path`` or its '.gz' compressed variant and return its
@@ -508,7 +515,7 @@ def checkCommand(cmd):
 
     return which(cmd) is not None
 
-
+  
 def which(cmd):
     """Get the fullpath of executable command ``cmd``.
 
@@ -540,6 +547,7 @@ def which(cmd):
 
     return None
 
+
 def makeDirs(path):
     """
     Create directories ``path`` recursive and return success.
@@ -556,15 +564,19 @@ def makeDirs(path):
 
     if os.path.isdir(path):
         return True
+
     else:
+
         try:
             os.makedirs(path)
         except Exception as e:
             logger.error("Failed to make dirs '%s': %s"
-                         %(path, str(e)), traceDepth = 1)
+                         % (path, str(e)), traceDepth=1)
+
     return os.path.isdir(path)
 
-def mkdir(path, mode = 0o755, enforce_permissions = True):
+
+def mkdir(path, mode=0o755, enforce_permissions=True):
     """
     Create directory ``path``.
 
@@ -581,14 +593,18 @@ def mkdir(path, mode = 0o755, enforce_permissions = True):
                 os.chmod(path, mode)
         except:
             return False
+
         return True
+
     else:
         os.mkdir(path, mode)
+
         if mode & 0o002 == 0o002:
-            #make file world (other) writable was requested
-            #debian and ubuntu won't set o+w with os.mkdir
-            #this will fix it
+            # make file world (other) writable was requested
+            # debian and ubuntu won't set o+w with os.mkdir
+            # this will fix it
             os.chmod(path, mode)
+
     return os.path.isdir(path)
 
 
@@ -1119,6 +1135,7 @@ def checkCronPattern(s):
     except ValueError:
         return False
 
+
 #TODO: check if this is still necessary
 def checkHomeEncrypt():
     """
@@ -1145,6 +1162,7 @@ def checkHomeEncrypt():
                 return True
     return False
 
+
 def envLoad(f):
     """
     Load environ variables from file ``f`` into current environ.
@@ -1164,6 +1182,7 @@ def envLoad(f):
             os.environ[key] = value
     del(env_file)
 
+
 def envSave(f):
     """
     Save environ variables to file that are needed by cron
@@ -1182,6 +1201,7 @@ def envSave(f):
             env_file.setStrValue(key, env[key])
 
     env_file.save(f)
+
 
 def keyringSupported():
     """
@@ -1289,11 +1309,13 @@ def password(*args):
         return keyring.get_password(*args)
     return None
 
+
 def setPassword(*args):
 
     if is_keyring_available:
         return keyring.set_password(*args)
     return False
+
 
 def mountpoint(path):
     """
@@ -1331,6 +1353,7 @@ def decodeOctalEscape(s):
     def repl(m):
         return chr(int(m.group(1), 8))
     return re.sub(r'\\(\d{3})', repl, s)
+
 
 def mountArgs(path):
     """
@@ -1557,16 +1580,6 @@ def filesystemMountInfo():
                 [mount_line.strip('\n').split(' ')[:2] for mount_line in mounts]
                 if uuidFromDev(items[0]) != None}
 
-
-def syncfs():
-    """
-    Sync any data buffered in memory to disk.
-
-    Returns:
-        bool:   ``True`` if successful
-    """
-    if checkCommand('sync'):
-        return(Execute(['sync']).run() == 0)
 
 def isRoot():
     """
@@ -1901,6 +1914,7 @@ def fdDup(old, new_fd, mode = 'w'):
     except OSError as e:
         logger.debug('Failed to redirect {}: {}'.format(old, str(e)))
 
+
 class UniquenessSet:
     """
     Check for uniqueness or equality of files.
@@ -2017,6 +2031,7 @@ class UniquenessSet:
         else:
             return self.reference == (st.st_size, int(st.st_mtime))
 
+
 class Alarm(object):
     """
     Establish a callback function that is called after a timeout.
@@ -2091,6 +2106,7 @@ class Alarm(object):
             raise Timeout()
         else:
             self.callback()
+
 
 class ShutDown(object):
     """
@@ -2251,7 +2267,6 @@ class ShutDown(object):
             return(False)
 
         if self.is_root:
-            syncfs()
             self.started = True
             proc = subprocess.Popen(['shutdown', '-h', 'now'])
             proc.communicate()
@@ -2261,7 +2276,6 @@ class ShutDown(object):
             return(False)
 
         else:
-            syncfs()
             self.started = True
 
             return(self.proxy(*self.args))
@@ -2357,6 +2371,7 @@ class SetupUdev(object):
             return
         self.iface.clean()
 
+
 class PathHistory(object):
     def __init__(self, path):
         self.history = [path,]
@@ -2390,6 +2405,7 @@ class PathHistory(object):
     def reset(self, path):
         self.history = [path,]
         self.index = 0
+
 
 class OrderedSet(MutableSet):
     """
@@ -2451,6 +2467,7 @@ class OrderedSet(MutableSet):
         if isinstance(other, OrderedSet):
             return len(self) == len(other) and list(self) == list(other)
         return set(self) == set(other)
+
 
 class Execute(object):
     """
@@ -2656,6 +2673,7 @@ class Execute(object):
         if self.pausable and self.currentProc:
             logger.info('Kill process "%s"' %self.printable_cmd, self.parent, 2)
             return self.currentProc.kill()
+
 
 class Daemon:
     """
