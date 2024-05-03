@@ -82,8 +82,8 @@ class CrontabDebug(pyfakefs_ut.TestCase):
         conf = config.Config(str(self.config_fp))
 
         # set and assert start conditions
-        conf.setDebugSchedule(True)
-        self.assertTrue(conf.debugSchedule())
+        conf.setScheduleDebug(True)
+        self.assertTrue(conf.scheduleDebug())
 
         sut = conf.cronCmd(profile_id='1')
         self.assertIn('--debug', sut)
@@ -97,8 +97,8 @@ class CrontabDebug(pyfakefs_ut.TestCase):
         conf = config.Config(str(self.config_fp))
 
         # set and assert start conditions
-        conf.setDebugSchedule(False)
-        self.assertFalse(conf.debugSchedule())
+        conf.setScheduleDebug(False)
+        self.assertFalse(conf.scheduleDebug())
 
         sut = conf.cronCmd(profile_id='1')
         self.assertNotIn('--debug', sut)

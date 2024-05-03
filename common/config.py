@@ -989,11 +989,11 @@ class Config(configfile.ConfigFileWithProfiles):
     def setScheduleMode(self, value, profile_id = None):
         self.setProfileIntValue('schedule.mode', value, profile_id)
 
-    def debugSchedule(self, profile_id = None):
+    def scheduleDebug(self, profile_id = None):
         #?Enable debug output to system log for schedule mode.
         return self.profileBoolValue('schedule.debug', False, profile_id)
 
-    def setDebugSchedule(self, value, profile_id = None):
+    def setScheduleDebug(self, value, profile_id = None):
         self.setProfileBoolValue('schedule.debug', value, profile_id)
 
     def scheduleTime(self, profile_id = None):
@@ -1819,7 +1819,7 @@ class Config(configfile.ConfigFileWithProfiles):
             cmd += '--config %s ' % self._LOCAL_CONFIG_PATH
 
         # Enable debug output
-        if self.debugSchedule(profile_id):
+        if self.scheduleDebug(profile_id):
             cmd += '--debug '
 
         # command
