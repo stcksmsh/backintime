@@ -563,10 +563,15 @@ class SettingsDialog(QDialog):
 
         self.cbScheduleDebug = QCheckBox(self)
         self.cbScheduleDebug.setText(_('Enable logging of debug messages'))
-        self.cbScheduleDebug.setToolTip(_(
-            'Writes debug-level messages into the system log via "--debug".'
-            ' Caution: Only use this temporarily for diagnostics, as it generates a large amount of output!'
-        ))
+        qttools.set_wrapped_tooltip(
+            self.cbScheduleDebug,
+            [
+                _('Writes debug-level messages into the system log via '
+                  '"--debug".'),
+                _('Caution: Only use this temporarily for diagnostics, as it '
+                  'generates a large amount of output.')
+            ]
+        )
         glayout.addWidget(self.cbScheduleDebug, 8, 0)
 
         #
